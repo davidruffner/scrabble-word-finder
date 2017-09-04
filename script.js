@@ -45,7 +45,8 @@ function findWords() {
     /* Make sure that word list has been loaded */
     wordListRequest.then(function(response) {
       var words = response.split(/\r?\n/);  // Split on newlines
-      words = words.slice(0, 1000);
+      //words = words.slice(0, 10000);
+      //words = words.filter(word => word === 'accuser');
       var patterns = createPatterns(startsWith, endsWith, gapLength);
 
       var matchingWords = words.filter(function(word){
@@ -67,7 +68,6 @@ function createPatterns(startsWith, endsWith, gapLength){
   var endPattern = endsWith + '$';
 
   if (gapLength != ''){
-    console.log('BBB')
     var midPattern = '.{' + gapLength + ',' + gapLength + '}';
   }
   else {
@@ -119,12 +119,14 @@ function containedBy(part, whole){
     if (whole.includes(part[i])){
       /* If the letter is in the bag, use it and move on */
       var wholeArray = [].slice.call(whole);
-      wholeArray = wholeArray.filter(letter => letter !== part[i]);
+      index = wholeArray.indexOf(part[i]);
+      if (index > -1) {
+        wholeArray.splice(index, 1);
+      }
       whole = wholeArray.join("");
       continue;
     }
     else{
-      console.log('Word fits but no letters.')
       return false;
     }
   }
@@ -133,14 +135,12 @@ function containedBy(part, whole){
 
 function checkWordPossible(word, patterns, myLetters){
   if (checkWordFits(word, patterns.pattern)){
-    console.log('It is a match!', word);
     var neededLetters = split(word,
                       patterns.startPattern,
                       patterns.endPattern);
     return containedBy(neededLetters, myLetters);
   }
   else {
-    console.log('Word does not fit');
     return false;
   }
 }
