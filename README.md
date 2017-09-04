@@ -1,4 +1,5 @@
-## Welcome to GitHub Pages
+## Scrabble Word Finder
+A tool for finding scrabble words based on your letters
 
 You can use the [editor on GitHub](https://github.com/davidruffner/scrabble-word-finder/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
