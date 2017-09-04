@@ -49,6 +49,7 @@ function makeCorsRequest() {
   xhr.send();
 }
 
+makeCorsRequest();
 
 /*
  * https://stackoverflow.com/questions/247483/http-get-request-in-javascript
