@@ -45,20 +45,14 @@ function findWords() {
     /* Make sure that word list has been loaded */
     wordListRequest.then(function(response) {
       var words = response.split(/\r?\n/);  // Split on newlines
+      words = words.slice(0, 1000);
       var patterns = createPatterns(startsWith, endsWith, gapLength);
-      if (checkWord(patterns.pattern, words[3])){
-        console.log('It is a match!', words[3]);
-        var neededLetters = split(words[3],
-                          patterns.startPattern,
-                          patterns.endPattern);
-        console.log('CCCCCCC');
-        console.log(containedBy(neededLetters, myLetters));
 
-      }
-      else {
-        console.log('No match');
-      }
-      document.getElementById("demo").innerHTML = myLetters + startsWith + endsWith + gapLength;
+      var matchingWords = words.filter(function(word){
+        return checkWordPossible(word, patterns, myLetters);
+      })
+      html = "<p>" + matchingWords.join("</p><p>") + "</p>";
+      document.getElementById("demo").innerHTML = html;
     }, function(error) {
       console.error("Failed!", error);
     });
@@ -87,7 +81,7 @@ function createPatterns(startsWith, endsWith, gapLength){
   };
 }
 
-function checkWord(pattern, word){
+function checkWordFits(word, pattern){
   var res = pattern.exec(word);
   if (res == null){
     return false;
@@ -130,8 +124,23 @@ function containedBy(part, whole){
       continue;
     }
     else{
+      console.log('Word fits but no letters.')
       return false;
     }
   }
   return true
+}
+
+function checkWordPossible(word, patterns, myLetters){
+  if (checkWordFits(word, patterns.pattern)){
+    console.log('It is a match!', word);
+    var neededLetters = split(word,
+                      patterns.startPattern,
+                      patterns.endPattern);
+    return containedBy(neededLetters, myLetters);
+  }
+  else {
+    console.log('Word does not fit');
+    return false;
+  }
 }
