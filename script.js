@@ -37,7 +37,7 @@ var wordListURL = 'https://davidruffner.github.io/scrabble-word-finder/resources
 var wordListRequest = get(wordListURL)
 
 function findWords() {
-    var letters = document.getElementById("letters").value;
+    var myLetters = document.getElementById("letters").value;
     var startsWith = document.getElementById("startsWith").value;
     var endsWith = document.getElementById("endsWith").value;
     var gapLength = document.getElementById("gapLength").value;
@@ -45,20 +45,20 @@ function findWords() {
     /* Make sure that word list has been loaded */
     wordListRequest.then(function(response) {
       var words = response.split(/\r?\n/);  // Split on newlines
-      console.log("Success1!", words[0]);
       var patterns = createPatterns(startsWith, endsWith, gapLength);
-      console.log(patterns);
-      console.log(patterns.pattern);
-      if (checkWord(patterns.pattern, words[0])){
-        console.log('It is a match!');
-        console.log(split(words[0],
+      if (checkWord(patterns.pattern, words[3])){
+        console.log('It is a match!', words[3]);
+        var neededLetters = split(words[3],
                           patterns.startPattern,
-                          patterns.endPattern));
+                          patterns.endPattern);
+        console.log('CCCCCCC');
+        console.log(containedBy(neededLetters, myLetters));
+
       }
       else {
         console.log('No match');
       }
-      document.getElementById("demo").innerHTML = letters + startsWith + endsWith + gapLength;
+      document.getElementById("demo").innerHTML = myLetters + startsWith + endsWith + gapLength;
     }, function(error) {
       console.error("Failed!", error);
     });
@@ -101,13 +101,10 @@ function checkWord(pattern, word){
   * Get none empty splits from a regex pattern applied to a word.
   */
 function getNonZeroSplits(pattern, word){
-  console.log('word' + word);
-  console.log('pattern' + pattern)
   splits = word.split(pattern);
   var nonZeroSplits = splits.filter(function(split){
     return split != '';
   });
-  console.log(nonZeroSplits);
   return nonZeroSplits;
 }
 
@@ -116,10 +113,25 @@ function getNonZeroSplits(pattern, word){
   * startPattern and endPattern.
   */
 function split(word, startPattern, endPattern){
-  end = getNonZeroSplits(startPattern,word)[0];
+  var end = getNonZeroSplits(startPattern,word)[0];
   var finalSplits = getNonZeroSplits(endPattern, end);
-  middle = finalSplits[finalSplits.length - 1];
-  console.log(middle)
-  console.log('AAAA')
+  var middle = finalSplits[finalSplits.length - 1];
   return middle;
+}
+
+function containedBy(part, whole){
+  var isContained = true;
+  for (i = 0; i < part.length; i++){
+    if (whole.includes(part[i])){
+      /* If the letter is in the bag, use it and move on */
+      var wholeArray = [].slice.call(whole);
+      wholeArray = wholeArray.filter(letter => letter !== part[i]);
+      whole = wholeArray.join("");
+      continue;
+    }
+    else{
+      return false;
+    }
+  }
+  return true
 }
