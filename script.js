@@ -46,9 +46,18 @@ function findWords() {
     wordListRequest.then(function(response) {
       var words = response.split(/\r?\n/);  // Split on newlines
       console.log("Success1!", words[0]);
-      var pattern = createPattern(startsWith, endsWith, gapLength);
-
-      console.log('A match? ' + checkWord(pattern, words[0]));
+      var patterns = createPatterns(startsWith, endsWith, gapLength);
+      console.log(patterns);
+      console.log(patterns.pattern);
+      if (checkWord(patterns.pattern, words[0])){
+        console.log('It is a match!');
+        console.log(split(words[0],
+                          patterns.startPattern,
+                          patterns.endPattern));
+      }
+      else {
+        console.log('No match');
+      }
       document.getElementById("demo").innerHTML = letters + startsWith + endsWith + gapLength;
     }, function(error) {
       console.error("Failed!", error);
@@ -59,20 +68,23 @@ function findWords() {
   * Finds regex pattern to pick out words that start with and
   * end with certain letters and have a certain length gap.
   */
-function createPattern(startsWith, endsWith, gapLength){
-  startPattern = '^' + startsWith;
-  endPattern = endsWith + '$';
+function createPatterns(startsWith, endsWith, gapLength){
+  var startPattern = '^' + startsWith;
+  var endPattern = endsWith + '$';
 
   if (gapLength != ''){
     console.log('BBB')
-    midPattern = '.{' + gapLength + ',' + gapLength + '}';
+    var midPattern = '.{' + gapLength + ',' + gapLength + '}';
   }
   else {
-    midPattern = '.+';
+    var midPattern = '.+';
   }
 
-  var re = new RegExp(startPattern + midPattern + endPattern);
-  return re;
+  return {
+    pattern: new RegExp(startPattern + midPattern + endPattern),
+    startPattern: new RegExp(startPattern),
+    endPattern: new RegExp(endPattern)
+  };
 }
 
 function checkWord(pattern, word){
@@ -83,4 +95,31 @@ function checkWord(pattern, word){
   else{
     return res[0];
   }
+}
+
+/**
+  * Get none empty splits from a regex pattern applied to a word.
+  */
+function getNonZeroSplits(pattern, word){
+  console.log('word' + word);
+  console.log('pattern' + pattern)
+  splits = word.split(pattern);
+  var nonZeroSplits = splits.filter(function(split){
+    return split != '';
+  });
+  console.log(nonZeroSplits);
+  return nonZeroSplits;
+}
+
+/**
+  * Find leftover fragment after removing characters found by
+  * startPattern and endPattern.
+  */
+function split(word, startPattern, endPattern){
+  end = getNonZeroSplits(startPattern,word)[0];
+  var finalSplits = getNonZeroSplits(endPattern, end);
+  middle = finalSplits[finalSplits.length - 1];
+  console.log(middle)
+  console.log('AAAA')
+  return middle;
 }
