@@ -48,6 +48,11 @@ function findWords() {
     var endsWith = document.getElementById("endsWith").value;
     var gapLength = document.getElementById("gapLength").value;
 
+    /* Make sure all inputs are lower case */
+    myLetters = myLetters.toLowerCase()
+    startsWith = startsWith.toLowerCase()
+    endsWith = endsWith.toLowerCase()
+    
     /* Make sure that word list has been loaded */
     wordListRequest.then(function(response) {
       var words = response.split(/\r?\n/);  // Split on newlines
