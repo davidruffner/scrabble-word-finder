@@ -43,21 +43,23 @@
       <h1>Scrabble Word Finder</h1>
 
       <p>A tool for finding scrabble words based on your letters</p>
-      <p>Created by <a href="davidruffner.github.io">David Ruffner</a>
-      <p>Checkout the <a href="https://github.com/davidruffner/scrabble-word-finder">code on github!</a><p>
-      <p><a href="http://www.greenworm.net/sites/default/files/gw-assets/enable1-wwf-v4.0-wordlist.txt">
-          Word source</a></p>
+
+      <p>
+        Created by <a href="davidruffner.github.io">David Ruffner</a>.
+        Checkout the <a href="https://github.com/davidruffner/scrabble-word-finder">code on github!</a>
+        <a href="http://www.greenworm.net/sites/default/files/gw-assets/enable1-wwf-v4.0-wordlist.txt">
+        Word source.</a>
+      </p>
 
 
       <script src="script.js"></script>
 
       <div>
         <p> Input your letters: </p>
-        <input type="text" id="letters" value="Your letters"><br>
-        <input type="text" id="startsWith" value="Starts with"><br>
-        <input type="text" id="endsWith" value="Ends with"><br>
-        <p> Gap length </p>
-        <input type="number" id="gapLength" value=""><br>
+        <input type="text" id="letters" placeholder="Your letters"><br>
+        <input type="text" id="startsWith" placeholder="Starts with"><br>
+        <input type="text" id="endsWith" placeholder="Ends with"><br>
+        <input type="number" id="gapLength" placeholder="Gap length"><br>
         <button onclick="findWords()">Find words!</button>
       </div>
 
