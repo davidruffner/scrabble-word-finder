@@ -36,6 +36,12 @@ function get(url) {
 var wordListURL = 'https://davidruffner.github.io/scrabble-word-finder/resources/enable1-wwf-v4.0-wordlist.txt';
 var wordListRequest = get(wordListURL)
 
+/**
+  * Finds words that match conditions defined by certain
+  * input boxes (contain specified letters, starts with, ends with,
+  * and has gap of certain length). Then it appends these words
+  * onto the page.
+  */
 function findWords() {
     var myLetters = document.getElementById("letters").value;
     var startsWith = document.getElementById("startsWith").value;
@@ -45,13 +51,16 @@ function findWords() {
     /* Make sure that word list has been loaded */
     wordListRequest.then(function(response) {
       var words = response.split(/\r?\n/);  // Split on newlines
-      //words = words.slice(0, 10000);
-      //words = words.filter(word => word === 'accuser');
       var patterns = createPatterns(startsWith, endsWith, gapLength);
 
       var matchingWords = words.filter(function(word){
         return checkWordPossible(word, patterns, myLetters);
       })
+
+      if (matchingWords.length == 0){
+        matchingWords = ['Sorry, no words found!'];
+      }
+
       html = "<p>" + matchingWords.join("</p><p>") + "</p>";
       document.getElementById("demo").innerHTML = html;
     }, function(error) {
